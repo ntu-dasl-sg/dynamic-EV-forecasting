@@ -50,4 +50,4 @@ http://ws.resif.fr/fdsnws/dataselect/1/query?net=YA&sta=UV05&loc=00&cha=HHZ&star
 http://ws.resif.fr/fdsnws/dataselect/1/query?net=YA&sta=UV05&loc=00&cha=HHZ&starttime=2010-05-08T00:00:00&endtime=2010-05-10T00:00:00&quality=B
 </details>
 
-The data for Training Event 3 was available via text files but can also be obtained via the dataselect service.
+The data for Training Event 3 can also be obtained via the dataselect service but we provide this in text file format together with sample intermediary data in [here](https://figshare.com/s/d684fdee7716f00ae779).

@@ -24,7 +24,7 @@ tr1 <- st@traces[[1]]
 
 # Read in test/training data and filter to frequency bands as required:
 
-miniseed <- TRUE # TRUE if in miniseed format; FALSE if using pre-processed data in text file format.
+miniseed <- FALSE # TRUE if in miniseed format; FALSE if using pre-processed data in text file format.
 
 if(miniseed){
   
@@ -77,11 +77,11 @@ if(miniseed){
 }else{
   
   # Read in unfiltered data for header:
-  uv05_raw <- read.table(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/UV05_unfiltered.txt", header = TRUE)
+  uv05_raw <- read.table(file = "Z:/training_data/Train_Piton_012010/UV05_unfiltered.txt", header = TRUE)
   
   # Read in frequency-filtered data to save as trace class:  
   # ======= Change filepath accordingly (repeat for different frequency bands):
-  uv05_unfilt <- read.table(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/UV05_highpass_0.01.txt", header = TRUE) 
+  uv05_unfilt <- read.table(file = "Z:/training_data/Train_Piton_012010/UV05_1-5Hz_new.txt", header = TRUE) 
   
   colnames(uv05_unfilt) <- colnames(uv05_raw)
   
@@ -167,19 +167,20 @@ hist(piton_env_dB@data)
 if(!miniseed){
   
   s_crisis_start <- as.POSIXct("2010-01-02 07:50:00", tz = "GMT")
-  s_crisis_end <- as.POSIXct("2010-01-02 07:54:00", tz = "GMT")
   s_swarm_start <- as.POSIXct("2010-01-02 08:20:00", tz = "GMT")
   s_swarm_end <- as.POSIXct("2010-01-02 09:02:00", tz = "GMT")
   eruption_onset_start <- as.POSIXct("2010-01-02 10:20:00", tz = "GMT")
-  eruption_onset_end <- as.POSIXct("2010-01-02 10:25:00", tz = "GMT")  
   
-  piton_env_dB_2 <- slice(piton_env_dB,  s_crisis_start - 5*60, eruption_onset_end + 180*60)
+  piton_env_dB_2 <- slice(piton_env_dB,  s_crisis_start - 5*60, eruption_onset_start + 180*60)
   
+  png(file = "G:/Connected_Extremes/Graphics/train3_envelope.png", width = 2200, height = 2200, res = 300)
   layout(matrix(seq(2)))        # layout a 2x1 matrix
-  plot(piton_env_dB)
-  plot(piton_env_dB_2)
-  abline(v=c(s_crisis_start, s_crisis_end, s_swarm_start, s_swarm_end,
-             eruption_onset_start, eruption_onset_end), col='blue', lwd=2)
+  plot(piton_env_dB, ylab = "Envelope (decibels)", xlab = "Date")
+  plot(piton_env_dB_2, ylab = "Envelope (decibels)", xlab = "Time (UTC) on Jan 02")
+  abline(v=c(s_crisis_start, s_swarm_start, s_swarm_end,
+             eruption_onset_start), col='blue', lwd=2, 
+         lty = c(3, 2, 2, 1))
+  dev.off()
   
 }
 

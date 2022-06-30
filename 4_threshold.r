@@ -19,20 +19,20 @@ library(tseries)
 
 # =========== Choose freq band here:
 
-load(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/Train_Piton_112009/lag1h_model_df_515.RData") 
+load(file = "Z:/training_data/Train_Piton_112009/lag1h_model_df_15.RData") 
 
 train_env1 <- lag1h_model_df$piton_env_dB
 
-load(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/Train_Piton_122009/lag1h_model_df_515.RData") 
+load(file = "Z:/training_data/Train_Piton_122009/lag1h_model_df_15.RData") 
 
 train_env2 <- lag1h_model_df$piton_env_dB
 
-load(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/Train_Piton_012010/lag1h_model_df_515.RData") 
+load(file = "Z:/training_data/Train_Piton_012010/lag1h_model_df_15.RData") 
 
 train_env3 <- lag1h_model_df$piton_env_dB
 
 # =========== Choose eruption index here:
-eruption_index <- train_env1
+eruption_index <- train_env3
 # Use  c(train_env1, train_env2, train_env3) if computing threshold based on all training events.
 
 # Set the range of threshold values to test:

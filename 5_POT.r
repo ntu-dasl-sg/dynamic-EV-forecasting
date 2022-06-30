@@ -15,15 +15,15 @@ library(generalhoslem) # Hosmer-Lemeshow Test
 
 # ================ Choose frequency band here:
 
-load(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/Train_Piton_112009/lag1h_model_df_15.RData")
+load(file = "Z:/training_data/Train_Piton_112009/lag1h_model_df_15.RData") 
 
 lag1h_model_df_train1 <- lag1h_model_df
 
-load(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/Train_Piton_122009/lag1h_model_df_15.RData")
+load(file = "Z:/training_data/Train_Piton_122009/lag1h_model_df_15.RData") 
 
 lag1h_model_df_train2 <- lag1h_model_df
 
-load(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/Train_Piton_012010/lag1h_model_df_15.RData")
+load(file = "Z:/training_data/Train_Piton_012010/lag1h_model_df_15.RData") 
 
 lag1h_model_df_train3 <- lag1h_model_df
 
@@ -224,7 +224,7 @@ print(xtable(te_summary, type = "latex"), file = "D:/Documents/Imperial_NTU_coll
 save(te_model, file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/te_model_15_lbound.RData")
 
 # If saved earlier, 
-# load(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/te_model_15_lbound.RData")
+# load(file = "Z:/training_data/te_model_15_lbound.RData")
 
 ## 5. Compute and plot training forecasts against event timings.
 
@@ -263,7 +263,9 @@ lag1h_model_df_train1$DateTime <- time_period
 # Plot of full event period:
 
 # Note: Forecast for 02:00 made at 01:00.
-plot(lag1h_model_df_train1[, "DateTime"] - 60*60, forecast_1$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date")
+plot(lag1h_model_df_train1[, "DateTime"] - 60*60, forecast_1$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date", xaxt = "n")
+axis(1, at = lag1h_model_df_train1[, "DateTime"][seq(1, nrow(lag1h_model_df_train1), length = 4)] - 60*60, 
+     labels = c("Nov 04", "Nov 05", "Nov 06", "Nov 07"))
 
 # Plot zoomed into day of eruption:
 

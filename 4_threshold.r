@@ -19,15 +19,15 @@ library(tseries)
 
 # =========== Choose freq band here:
 
-load(file = "Z:/training_data/Train_Piton_112009/lag1h_model_df_15.RData") 
+load(file = "Y:/training_data/Train_Piton_112009/lag1h_model_df_15.RData") 
 
 train_env1 <- lag1h_model_df$piton_env_dB
 
-load(file = "Z:/training_data/Train_Piton_122009/lag1h_model_df_15.RData") 
+load(file = "Y:/training_data/Train_Piton_122009/lag1h_model_df_15.RData") 
 
 train_env2 <- lag1h_model_df$piton_env_dB
 
-load(file = "Z:/training_data/Train_Piton_012010/lag1h_model_df_15.RData") 
+load(file = "Y:/training_data/Train_Piton_012010/lag1h_model_df_15.RData") 
 
 train_env3 <- lag1h_model_df$piton_env_dB
 
@@ -38,7 +38,7 @@ eruption_index <- train_env3
 # Set the range of threshold values to test:
 q1 <- quantile(eruption_index, p = 0.85) 
 q2 <- quantile(eruption_index, p = 0.999) 
-threshold_vec <- seq(q1, q2, length.out = 25)
+threshold_vec <- seq(round(q1), round(q2), length.out = 25)
 
 # Set a significance level for the goodness-of-fit tests:
 sig_level <- 0.1
@@ -100,12 +100,13 @@ at_df_full <- rbind(at_df, at_df_2)
 
 at_df_full <- at_df_full[at_df_full$Variable == "p value", ]
 
-adcvm_plot <- ggplot(data = at_df_full) + geom_line(aes(x = Threshold, y = Value, color = Test)) + geom_point(aes(x = Threshold, y = Value, color = Test)) + theme_classic()  + coord_cartesian(ylim = c(0, 1)) + geom_hline(yintercept = sig_level, lty = 2) + ylab("p value")
+adcvm_plot <- ggplot(data = at_df_full) + geom_line(aes(x = Threshold, y = Value, color = Test)) + geom_point(aes(x = Threshold, y = Value, color = Test)) + theme_classic()  + coord_cartesian(ylim = c(0, 1)) + geom_hline(yintercept = sig_level, lty = 2) + ylab("p value") + theme(legend.position="bottom")
 
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/train3_pvalue.png", width = 1250, height = 1000, res = 300)
 adcvm_plot
+dev.off()
 
 ## 5. Check Generalised Pareto Distribution (GPD) goodness-of-fit plots for chosen threshold value.
-
 at_df_full
 
 # Fit the peak-over-threshold model with MLE optim:

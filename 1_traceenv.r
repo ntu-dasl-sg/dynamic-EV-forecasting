@@ -24,13 +24,13 @@ tr1 <- st@traces[[1]]
 
 # Read in test/training data and filter to frequency bands as required:
 
-miniseed <- FALSE # TRUE if in miniseed format; FALSE if using pre-processed data in text file format.
+miniseed <- TRUE # TRUE if in miniseed format; FALSE if using pre-processed data in text file format.
 
 if(miniseed){
   
   temp.time <- proc.time()[3]
   # ======= Change filepath accordingly:
-  uv05_raw <- readMiniseedFile("Z:/non_events/NEvent_2/NEvent_Piton_122009.mseed")
+  uv05_raw <- readMiniseedFile("Y:/non_events/NEvent_3/Nevent_Piton_052010.mseed")
   time.taken <- proc.time()[3] - temp.time # 6 minutes.
   
   # Ensure sequence has even length because FFT is very slow on odd length sequences:
@@ -72,16 +72,16 @@ if(miniseed){
   
   # ======= Change filepath accordingly:
   save(tr_uv05_raw, tr_uv05_hp001, tr_uv05_0120, tr_uv05_011, tr_uv05_515, tr_uv05_15, 
-       file = "Z:/non_events/NEvent_2/NEvent_Piton_122009_traces.RData")
+       file = "Y:/training_data/Train_Piton_122009/Train_Piton_122009_traces.RData")
   
 }else{
   
   # Read in unfiltered data for header:
-  uv05_raw <- read.table(file = "Z:/training_data/Train_Piton_012010/UV05_unfiltered.txt", header = TRUE)
+  uv05_raw <- read.table(file = "Y:/training_data/Train_Piton_012010/UV05_unfiltered.txt", header = TRUE)
   
   # Read in frequency-filtered data to save as trace class:  
   # ======= Change filepath accordingly (repeat for different frequency bands):
-  uv05_unfilt <- read.table(file = "Z:/training_data/Train_Piton_012010/UV05_1-5Hz_new.txt", header = TRUE) 
+  uv05_unfilt <- read.table(file = "Y:/training_data/Train_Piton_012010/UV05_1-5Hz_new.txt", header = TRUE) 
   
   colnames(uv05_unfilt) <- colnames(uv05_raw)
   
@@ -120,7 +120,7 @@ if(miniseed){
 ## 3. Compute trace envelopes of frequency-filtered seismic traces.
 
 # ======= Choose the frequency band here.
-tr_uv05 <- tr_uv05_011 
+tr_uv05 <- tr_uv05_15
 
 piton_ddt <- tr_uv05
 
@@ -170,20 +170,163 @@ if(!miniseed){
   s_swarm_start <- as.POSIXct("2010-01-02 08:20:00", tz = "GMT")
   s_swarm_end <- as.POSIXct("2010-01-02 09:02:00", tz = "GMT")
   eruption_onset_start <- as.POSIXct("2010-01-02 10:20:00", tz = "GMT")
+
+  tr_uv05_2 <- slice(tr_uv05,  s_crisis_start - 5*60, eruption_onset_start + 180*60)
   
   piton_env_dB_2 <- slice(piton_env_dB,  s_crisis_start - 5*60, eruption_onset_start + 180*60)
-  
-  png(file = "G:/Connected_Extremes/Graphics/train3_envelope.png", width = 2200, height = 2200, res = 300)
+
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/train3_signal.png", width = 1800, height = 1800, res = 300)
   layout(matrix(seq(2)))        # layout a 2x1 matrix
-  plot(piton_env_dB, ylab = "Envelope (decibels)", xlab = "Date")
-  plot(piton_env_dB_2, ylab = "Envelope (decibels)", xlab = "Time (UTC) on Jan 02")
+  plot(tr_uv05, ylab = "Counts", xlab = "Date", ylim = c(-55000, 55000))
+  plot(tr_uv05_2, ylab = "Counts", xlab = "Time (UTC) on Jan 02", ylim = c(-55000, 55000))
+  abline(v=c(s_crisis_start, s_swarm_start, s_swarm_end,
+             eruption_onset_start), col='blue', lwd=2, 
+         lty = c(3, 2, 2, 1))
+  dev.off()
+    
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/train3_envelope.png", width = 1800, height = 1800, res = 300)
+  layout(matrix(seq(2)))        # layout a 2x1 matrix
+  plot(piton_env_dB, ylab = "Decibels", xlab = "Date", ylim = c(15, 100))
+  plot(piton_env_dB_2, ylab = "Decibels", xlab = "Time (UTC) on Jan 02", ylim = c(15, 100))
   abline(v=c(s_crisis_start, s_swarm_start, s_swarm_end,
              eruption_onset_start), col='blue', lwd=2, 
          lty = c(3, 2, 2, 1))
   dev.off()
   
+}else{
+  
+  # Choose to run the plotting code below depending on each event set is read in.
+  
+  ##################
+  # Training set 1 #
+  ##################
+  
+  # For 11/2009 event:
+  eruption_onset_start <- as.POSIXct("2009-11-05 17:00:00", tz = "GMT")
+  seismic_crisis_start <- as.POSIXct("2009-11-05 15:30:00", tz = "GMT")
+  seismic_swarm_start <- as.POSIXct("2009-11-05 15:40:00", tz = "GMT")
+  seismic_swarm_end <- as.POSIXct("2009-11-05 16:10:00", tz = "GMT")
+  
+  tr_uv05_2 <- slice(tr_uv05,  seismic_crisis_start - 5*60, eruption_onset_start + 180*60)
+  
+  piton_env_dB_2 <- slice(piton_env_dB,  seismic_crisis_start - 5*60, eruption_onset_start + 180*60)
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/train1_signal.png", width = 1800, height = 1800, res = 300)
+  layout(matrix(seq(2)))        # layout a 2x1 matrix
+  plot(tr_uv05, ylab = "Counts", xlab = "Date", ylim = c(-85000, 85000))
+  plot(tr_uv05_2, ylab = "Counts", xlab = "Time (UTC) on Nov 05", ylim = c(-85000, 85000))
+  abline(v=c(seismic_crisis_start, seismic_swarm_start, seismic_swarm_end,
+             eruption_onset_start), col='blue', lwd=2, 
+         lty = c(3, 2, 2, 1))
+  dev.off()
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/train1_envelope.png", width = 1800, height = 1800, res = 300)
+  layout(matrix(seq(2)))        # layout a 2x1 matrix
+  plot(piton_env_dB, ylab = "Decibels", xlab = "Date", ylim = c(15, 100))
+  plot(piton_env_dB_2, ylab = "Decibels", xlab = "Time (UTC) on Nov 05", ylim = c(15, 100))
+  abline(v=c(seismic_crisis_start, seismic_swarm_start, seismic_swarm_end,
+             eruption_onset_start), col='blue', lwd=2, 
+         lty = c(3, 2, 2, 1))
+  dev.off()
+  
+  ##################
+  # Training set 2 #
+  ##################
+  
+  # For 12/2009 event:
+  eruption_onset_start <- as.POSIXct("2009-12-14 14:40:00", tz = "GMT")
+  seismic_crisis_start <- as.POSIXct("2009-12-14 13:30:00", tz = "GMT")
+  seismic_swarm_start <- as.POSIXct("2009-12-14 13:40:00", tz = "GMT")
+  seismic_swarm_end <- as.POSIXct("2009-12-14 14:12:00", tz = "GMT")
+  
+  tr_uv05_2 <- slice(tr_uv05,  seismic_crisis_start - 5*60, eruption_onset_start + 180*60)
+  
+  piton_env_dB_2 <- slice(piton_env_dB,  seismic_crisis_start - 5*60, eruption_onset_start + 180*60)
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/train2_signal.png", width = 1800, height = 1800, res = 300)
+  layout(matrix(seq(2)))        # layout a 2x1 matrix
+  plot(tr_uv05, ylab = "Counts", xlab = "Date", ylim = c(-100000, 100000))
+  plot(tr_uv05_2, ylab = "Counts", xlab = "Time (UTC) on Dec 14", ylim = c(-100000, 100000))
+  abline(v=c(seismic_crisis_start, seismic_swarm_start, seismic_swarm_end,
+             eruption_onset_start), col='blue', lwd=2, 
+         lty = c(3, 2, 2, 1))
+  dev.off()
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/train2_envelope.png", width = 1800, height = 1800, res = 300)
+  layout(matrix(seq(2)))        # layout a 2x1 matrix
+  plot(piton_env_dB, ylab = "Decibels", xlab = "Date", ylim = c(15, 120))
+  plot(piton_env_dB_2, ylab = "Decibels", xlab = "Time (UTC) on Dec 14", ylim = c(15, 120))
+  abline(v=c(seismic_crisis_start, seismic_swarm_start, seismic_swarm_end,
+             eruption_onset_start), col='blue', lwd=2, 
+         lty = c(3, 2, 2, 1))
+  dev.off()
+  
+  ##############
+  # Test event #
+  ##############
+  
+  eruption_onset_start <- as.POSIXct("2010-10-14 15:20:00", tz = "GMT")
+  seismic_crisis_start <- as.POSIXct("2010-10-14 09:45:00", tz = "GMT")
+  seismic_swarm_start <- as.POSIXct("2010-10-14 10:50:00", tz = "GMT")
+  seismic_swarm_end <- as.POSIXct("2009-10-14 11:30:00", tz = "GMT")
+ 
+  tr_uv05_2 <- slice(tr_uv05,  seismic_crisis_start - 5*60, eruption_onset_start + 180*60)
+  
+  piton_env_dB_2 <- slice(piton_env_dB,  seismic_crisis_start - 5*60, eruption_onset_start + 180*60)
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/test_signal.png", width = 1800, height = 1800, res = 300)
+  layout(matrix(seq(2)))        # layout a 2x1 matrix
+  plot(tr_uv05, ylab = "Counts", xlab = "Date", ylim = c(-85000, 85000))
+  plot(tr_uv05_2, ylab = "Counts", xlab = "Time (UTC) on Oct 14", ylim = c(-85000, 85000))
+  abline(v=c(seismic_crisis_start, seismic_swarm_start, seismic_swarm_end,
+             eruption_onset_start), col='blue', lwd=2, 
+         lty = c(3, 2, 2, 1))
+  dev.off()
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/test_envelope.png", width = 1800, height = 1800, res = 300)
+  layout(matrix(seq(2)))        # layout a 2x1 matrix
+  plot(piton_env_dB, ylab = "Decibels", xlab = "Date", ylim = c(15, 100))
+  plot(piton_env_dB_2, ylab = "Decibels", xlab = "Time (UTC) on Oct 14", ylim = c(15, 100))
+  abline(v=c(seismic_crisis_start, seismic_swarm_start, seismic_swarm_end,
+             eruption_onset_start), col='blue', lwd=2, 
+         lty = c(3, 2, 2, 1))
+  dev.off()
+   
+  ###################
+  # Test non-events #
+  ###################
+  
+  # Non-event 1
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/nonevent1_signal.png", width = 1800, height = 900, res = 300)   
+  plot(tr_uv05, ylab = "Counts", xlab = "Time (UTC) on Nov 30", ylim =c(-55000, 55000))
+  dev.off()
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/nonevent1_envelope.png", width = 1800, height = 900, res = 300)
+  plot(piton_env_dB, ylab = "Decibels", xlab = "Time (UTC) on Nov 30", ylim = c(15, 100))
+  dev.off()
+  
+  # Non-event 2
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/nonevent2_signal.png", width = 1800, height = 900, res = 300)   
+  plot(tr_uv05, ylab = "Counts", xlab = "Date", ylim =c(-55000, 55000))
+  dev.off()
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/nonevent2_envelope.png", width = 1800, height = 900, res = 300)
+  plot(piton_env_dB, ylab = "Decibels", xlab = "Date", ylim = c(15, 100))
+  dev.off()
+  
+  # Non-event 3
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/nonevent3_signal.png", width = 1800, height = 900, res = 300)   
+  plot(tr_uv05, ylab = "Counts", xlab = "Date", ylim =c(-55000, 55000))
+  dev.off()
+  
+  png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/nonevent3_envelope.png", width = 1800, height = 900, res = 300)
+  plot(piton_env_dB, ylab = "Decibels", xlab = "Date", ylim = c(15, 100))
+  dev.off()
 }
 
 # ======= Choose the frequency band here.
-save(piton_env_dB, file = "Z:/non_events/NEvent_3/eruption_index_011.RData")
+save(piton_env_dB, file = "Y:/non_events/NEvent_3/eruption_index_011.RData")
 

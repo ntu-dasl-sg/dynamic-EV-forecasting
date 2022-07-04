@@ -15,15 +15,15 @@ library(generalhoslem) # Hosmer-Lemeshow Test
 
 # ================ Choose frequency band here:
 
-load(file = "Z:/training_data/Train_Piton_112009/lag1h_model_df_15.RData") 
+load(file = "Y:/training_data/Train_Piton_112009/lag1h_model_df_15.RData") 
 
 lag1h_model_df_train1 <- lag1h_model_df
 
-load(file = "Z:/training_data/Train_Piton_122009/lag1h_model_df_15.RData") 
+load(file = "Y:/training_data/Train_Piton_122009/lag1h_model_df_15.RData") 
 
 lag1h_model_df_train2 <- lag1h_model_df
 
-load(file = "Z:/training_data/Train_Piton_012010/lag1h_model_df_15.RData") 
+load(file = "Y:/training_data/Train_Piton_012010/lag1h_model_df_15.RData") 
 
 lag1h_model_df_train3 <- lag1h_model_df
 
@@ -224,7 +224,9 @@ print(xtable(te_summary, type = "latex"), file = "D:/Documents/Imperial_NTU_coll
 save(te_model, file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/te_model_15_lbound.RData")
 
 # If saved earlier, 
-# load(file = "Z:/training_data/te_model_15_lbound.RData")
+# load(file = "Y:/training_data/te_model_15_lbound.RData")
+
+load(file = "Y:/archive/index_trace_env_15/te_model.RData")
 
 ## 5. Compute and plot training forecasts against event timings.
 
@@ -262,10 +264,14 @@ lag1h_model_df_train1$DateTime <- time_period
 
 # Plot of full event period:
 
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train1_lbound.png", width = 1800, height = 1200, res = 300)
+
 # Note: Forecast for 02:00 made at 01:00.
-plot(lag1h_model_df_train1[, "DateTime"] - 60*60, forecast_1$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date", xaxt = "n")
-axis(1, at = lag1h_model_df_train1[, "DateTime"][seq(1, nrow(lag1h_model_df_train1), length = 4)] - 60*60, 
-     labels = c("Nov 04", "Nov 05", "Nov 06", "Nov 07"))
+plot(lag1h_model_df_train1[, "DateTime"] - 60*60, forecast_1$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date", xaxt = "n", ylim = c(0, 1))
+axis(1, at = lag1h_model_df_train1[, "DateTime"][seq(1, nrow(lag1h_model_df_train1), length = 4)][1:3] - 60*60, 
+     labels = c("Nov 04", "Nov 05", "Nov 06"))
+
+dev.off()
 
 # Plot zoomed into day of eruption:
 
@@ -277,11 +283,13 @@ plot_period <- which(lag1h_model_df_train1$DateTime==eruption_onset_start)
 plot_period <- c((plot_period-start_buffer+1):(plot_period+end_buffer-1))
 
 # DateTime in model_df is for forecasted time so is 1 hour after time of covariates. 
-plot(lag1h_model_df_train1[plot_period, "DateTime"] - 60*60, forecast_1$te_prob[plot_period], type = 'l', ylab = "", xlab = "Time at which forecast is made", ylim = c(0, 1))
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train1_zoom_lbound.png", width = 1800, height = 1200, res = 300)
+plot(lag1h_model_df_train1[plot_period, "DateTime"] - 60*60, forecast_1$te_prob[plot_period], type = 'l',  ylab = "1 hour ahead forecast probability", xlab = "Time (UTC) on Nov 05", ylim = c(0, 1))
 abline(v = eruption_onset_start, col = 'blue')
 abline(v = seismic_crisis_start, col = 'blue', lty = 3)
 abline(v = seismic_swarm_start, col = 'blue', lty = 2)
 abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+dev.off()
 
 ##################
 # Training set 2 #
@@ -305,7 +313,13 @@ lag1h_model_df_train2$DateTime <- time_period
 
 # Plot of full event period:
 
-plot(lag1h_model_df_train2[, "DateTime"] - 60*60, forecast_2$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date")
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train2_lbound.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train2[, "DateTime"] - 60*60, forecast_2$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date", xaxt = "n", ylim = c(0, 1))
+axis(1, at = lag1h_model_df_train2[, "DateTime"][seq(1, nrow(lag1h_model_df_train2), length = 3)] - 60*60, 
+     labels = c("Dec 13", "Dec 14", "Dec 15"))
+
+dev.off()
 
 # Plot zoomed into day of eruption:
 
@@ -317,11 +331,13 @@ plot_period <- which(lag1h_model_df_train2$DateTime==eruption_onset_start)
 plot_period <- c((plot_period-start_buffer+1):(plot_period+end_buffer-1))
 
 # DateTime in model_df is for forecasted time so is 1 hour after time of covariates. 
-plot(lag1h_model_df_train2[plot_period, "DateTime"] - 60*60, forecast_2$te_prob[plot_period], type = 'l', ylab = "", xlab = "Time at which forecast is made")
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train1_zoom_lbound.png", width = 1800, height = 1200, res = 300)
+plot(lag1h_model_df_train2[plot_period, "DateTime"] - 60*60, forecast_2$te_prob[plot_period], type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Time (UTC) on Dec 14", ylim = c(0, 1))
 abline(v = eruption_onset_start, col = 'blue')
 abline(v = seismic_crisis_start, col = 'blue', lty = 3)
 abline(v = seismic_swarm_start, col = 'blue', lty = 2)
 abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+dev.off()
 
 ##################
 # Training set 3 #
@@ -329,34 +345,36 @@ abline(v = seismic_swarm_end, col = 'blue', lty = 2)
 
 # For Jan 2010 event:
 s_crisis_start <- as.POSIXct("2010-01-02 07:50:00", tz = "GMT")
-s_crisis_end <- as.POSIXct("2010-01-02 07:54:00", tz = "GMT")
 s_swarm_start <- as.POSIXct("2010-01-02 08:20:00", tz = "GMT")
 s_swarm_end <- as.POSIXct("2010-01-02 09:02:00", tz = "GMT")
 eruption_onset_start <- as.POSIXct("2010-01-02 10:20:00", tz = "GMT")
-eruption_onset_end <- as.POSIXct("2010-01-02 10:25:00", tz = "GMT")
 
 # Plot of full event period:
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train3.png", width = 1800, height = 1200, res = 300)
 
-plot(lag1h_model_df_train3[, "DateTime"] - 60*60, forecast_3$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date")
+plot(lag1h_model_df_train3[, "DateTime"] - 60*60, forecast_3$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date", xaxt = "n", ylim = c(0, 1))
+axis(1, at = lag1h_model_df_train3[, "DateTime"][seq(1, nrow(lag1h_model_df_train3), length = 4)][1:3] - 60*60, 
+     labels = c("Jan 01", "Jan 02", "Jan 03"))
+
+dev.off()
 
 # Plot zoomed into day of eruption:
 
 start_buffer <- 6*5 # 5 minutes before the crisis.
 end_buffer <- 6*60*3 # 3 hours after the eruption onset.
 
-plot_period <- which(lag1h_model_df_train3$DateTime>=s_crisis_start & lag1h_model_df_train3$DateTime<=eruption_onset_end)
+plot_period <- which(lag1h_model_df_train3$DateTime>=s_crisis_start & lag1h_model_df_train3$DateTime<=eruption_onset_start)
 
 plot_period <- c((plot_period[1]-start_buffer+1):(plot_period[1]-1), plot_period, (plot_period[length(plot_period)]+ 1):(plot_period[length(plot_period)]+end_buffer-1))
 
 # DateTime in model_df is for forecasted time so is 1 hour after time of covariates. 
-plot(lag1h_model_df_train3[plot_period, "DateTime"] - 60*60, forecast_3$te_prob[plot_period], type = 'l', ylab = "", xlab = "Time at which forecast is made", ylim = c(0, 1))
-title("1 hour ahead forecast probability of exceedance")
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train3_zoom.png", width = 1800, height = 1200, res = 300)
+plot(lag1h_model_df_train3[plot_period, "DateTime"] - 60*60, forecast_3$te_prob[plot_period], type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Time (UTC) on Jan 02", ylim = c(0, 1))
 abline(v = eruption_onset_start, col = 'blue')
-abline(v = eruption_onset_end, col = 'blue')
 abline(v = s_crisis_start, col = 'blue', lty = 3)
-abline(v = s_crisis_end, col = 'blue', lty = 3)
 abline(v = s_swarm_start, col = 'blue', lty = 2)
 abline(v = s_swarm_end, col = 'blue', lty = 2)
+dev.off()
 
 ## 6. Compute goodness-of-fit tests for the logistic regression.
 

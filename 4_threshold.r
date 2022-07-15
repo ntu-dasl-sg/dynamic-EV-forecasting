@@ -32,7 +32,7 @@ load(file = "Y:/training_data/Train_Piton_012010/lag1h_model_df_15.RData")
 train_env3 <- lag1h_model_df$piton_env_dB
 
 # =========== Choose eruption index here:
-eruption_index <- train_env3
+eruption_index <- c(train_env1, train_env2, train_env3) #train_env3
 # Use  c(train_env1, train_env2, train_env3) if computing threshold based on all training events.
 
 # Set the range of threshold values to test:
@@ -100,9 +100,9 @@ at_df_full <- rbind(at_df, at_df_2)
 
 at_df_full <- at_df_full[at_df_full$Variable == "p value", ]
 
-adcvm_plot <- ggplot(data = at_df_full) + geom_line(aes(x = Threshold, y = Value, color = Test)) + geom_point(aes(x = Threshold, y = Value, color = Test)) + theme_classic()  + coord_cartesian(ylim = c(0, 1)) + geom_hline(yintercept = sig_level, lty = 2) + ylab("p value") + theme(legend.position="bottom")
+adcvm_plot <- ggplot(data = at_df_full) + geom_line(aes(x = Threshold, y = Value, linetype = Test)) + geom_point(aes(x = Threshold, y = Value, shape = Test)) + theme_classic()  + coord_cartesian(ylim = c(0, 1)) + geom_hline(yintercept = sig_level, lty = 2) + ylab("p value") + theme(legend.position="bottom")
 
-png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/train3_pvalue.png", width = 1250, height = 1000, res = 300)
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/trainall_pvalue.png", width = 1250, height = 1000, res = 300)
 adcvm_plot
 dev.off()
 

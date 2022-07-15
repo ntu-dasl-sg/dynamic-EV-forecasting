@@ -32,6 +32,8 @@ chosen_col <- colnames(lag1h_model_df_train1)
 # ================ Choose number of training sets here:
 model_df <- rbind(lag1h_model_df_train1, lag1h_model_df_train2[, chosen_col], lag1h_model_df_train3[, chosen_col])
 
+# model_df <- lag1h_model_df_train3[, chosen_col]
+
 train1_end <- nrow(lag1h_model_df_train1)
 train2_end <- train1_end + nrow(lag1h_model_df_train2)
 train3_end <- nrow(model_df)
@@ -148,7 +150,7 @@ trans_df$sd <- sd_vector
 head(trans_df)
 
 # ================ Choose frequency band here:
-save(trans_df, file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/trans_df_15.RData")
+save(trans_df, file = "Y:/training_data/trans_df_15.RData")
 
 # Check for NaNs and remove covariates with NaNs: 
 nan_col <- which(lapply(model_df, FUN = function(x){sum(is.nan(x))}) > 0)
@@ -224,9 +226,9 @@ print(xtable(te_summary, type = "latex"), file = "D:/Documents/Imperial_NTU_coll
 save(te_model, file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Piton/training_data/te_model_15_lbound.RData")
 
 # If saved earlier, 
-# load(file = "Y:/training_data/te_model_15_lbound.RData")
-
-load(file = "Y:/archive/index_trace_env_15/te_model.RData")
+load(file = "Y:/training_data/te_model_15_lbound.RData")
+# For training event 3 only: 
+# load(file = "Y:/archive/index_trace_env_15/te_model.RData")
 
 ## 5. Compute and plot training forecasts against event timings.
 
@@ -264,7 +266,7 @@ lag1h_model_df_train1$DateTime <- time_period
 
 # Plot of full event period:
 
-png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train1_lbound.png", width = 1800, height = 1200, res = 300)
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_515_train1_lbound.png", width = 1800, height = 1200, res = 300)
 
 # Note: Forecast for 02:00 made at 01:00.
 plot(lag1h_model_df_train1[, "DateTime"] - 60*60, forecast_1$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date", xaxt = "n", ylim = c(0, 1))
@@ -283,13 +285,55 @@ plot_period <- which(lag1h_model_df_train1$DateTime==eruption_onset_start)
 plot_period <- c((plot_period-start_buffer+1):(plot_period+end_buffer-1))
 
 # DateTime in model_df is for forecasted time so is 1 hour after time of covariates. 
-png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train1_zoom_lbound.png", width = 1800, height = 1200, res = 300)
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_515_train1_zoom_lbound.png", width = 1800, height = 1200, res = 300)
 plot(lag1h_model_df_train1[plot_period, "DateTime"] - 60*60, forecast_1$te_prob[plot_period], type = 'l',  ylab = "1 hour ahead forecast probability", xlab = "Time (UTC) on Nov 05", ylim = c(0, 1))
 abline(v = eruption_onset_start, col = 'blue')
 abline(v = seismic_crisis_start, col = 'blue', lty = 3)
 abline(v = seismic_swarm_start, col = 'blue', lty = 2)
 abline(v = seismic_swarm_end, col = 'blue', lty = 2)
 dev.off()
+
+# Major covariates:
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_kurtosis_0120_train1.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train1$DateTime - 60*60, forecast_1$cep_kurtosis_0120, type = 'l', ylab = "0.1-20Hz cepstral kurtosis", xlab = "Date", xaxt = "n", ylim = c(-8, 4)) 
+
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+axis(1, at = lag1h_model_df_train1[, "DateTime"][seq(1, nrow(lag1h_model_df_train1), length = 4)][1:3] - 60*60, 
+     labels = c("Nov 04", "Nov 05", "Nov 06"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_train1.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train1$DateTime - 60*60, forecast_1$cep_skew_0120, type = 'l', ylab = "0.1-20Hz cepstral skewness", xlab = "Date", xaxt = "n", ylim = c(-8, 4))
+
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+axis(1, at = lag1h_model_df_train1[, "DateTime"][seq(1, nrow(lag1h_model_df_train1), length = 4)][1:3] - 60*60, 
+     labels = c("Nov 04", "Nov 05", "Nov 06"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_train1.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train1$DateTime - 60*60, forecast_1$energy_hp001, type = 'l', ylab = "High pass 0.01Hz energy", xlab = "Date", xaxt = "n", ylim = c(-2, 3))
+
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+axis(1, at = lag1h_model_df_train1[, "DateTime"][seq(1, nrow(lag1h_model_df_train1), length = 4)][1:3] - 60*60, 
+     labels = c("Nov 04", "Nov 05", "Nov 06"))
+
+dev.off()
+
 
 ##################
 # Training set 2 #
@@ -313,7 +357,7 @@ lag1h_model_df_train2$DateTime <- time_period
 
 # Plot of full event period:
 
-png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train2_lbound.png", width = 1800, height = 1200, res = 300)
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_515_train2_lbound.png", width = 1800, height = 1200, res = 300)
 
 plot(lag1h_model_df_train2[, "DateTime"] - 60*60, forecast_2$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date", xaxt = "n", ylim = c(0, 1))
 axis(1, at = lag1h_model_df_train2[, "DateTime"][seq(1, nrow(lag1h_model_df_train2), length = 3)] - 60*60, 
@@ -331,12 +375,53 @@ plot_period <- which(lag1h_model_df_train2$DateTime==eruption_onset_start)
 plot_period <- c((plot_period-start_buffer+1):(plot_period+end_buffer-1))
 
 # DateTime in model_df is for forecasted time so is 1 hour after time of covariates. 
-png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train1_zoom_lbound.png", width = 1800, height = 1200, res = 300)
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_515_train2_zoom_lbound.png", width = 1800, height = 1200, res = 300)
 plot(lag1h_model_df_train2[plot_period, "DateTime"] - 60*60, forecast_2$te_prob[plot_period], type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Time (UTC) on Dec 14", ylim = c(0, 1))
 abline(v = eruption_onset_start, col = 'blue')
 abline(v = seismic_crisis_start, col = 'blue', lty = 3)
 abline(v = seismic_swarm_start, col = 'blue', lty = 2)
 abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+dev.off()
+
+# Major covariates:
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_kurtosis_0120_train2.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train2$DateTime - 60*60, forecast_2$cep_kurtosis_0120, type = 'l', ylab = "0.1-20Hz cepstral kurtosis", xlab = "Date", xaxt = "n", ylim = c(-8, 4)) 
+
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+axis(1, at = lag1h_model_df_train2[, "DateTime"][seq(1, nrow(lag1h_model_df_train2), length = 3)] - 60*60, 
+     labels = c("Dec 13", "Dec 14", "Dec 15"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_train2.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train2$DateTime - 60*60, forecast_2$cep_skew_0120, type = 'l', ylab = "0.1-20Hz cepstral skewness", xlab = "Date", xaxt = "n", ylim = c(-8, 4))
+
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+axis(1, at = lag1h_model_df_train2[, "DateTime"][seq(1, nrow(lag1h_model_df_train2), length = 3)] - 60*60, 
+     labels = c("Dec 13", "Dec 14", "Dec 15"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_train2.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train2$DateTime - 60*60, forecast_2$energy_hp001, type = 'l', ylab = "High pass 0.01Hz energy", xlab = "Date", xaxt = "n", ylim = c(-2, 3)) 
+
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+axis(1, at = lag1h_model_df_train2[, "DateTime"][seq(1, nrow(lag1h_model_df_train2), length = 3)] - 60*60, 
+     labels = c("Dec 13", "Dec 14", "Dec 15"))
+
 dev.off()
 
 ##################
@@ -350,13 +435,23 @@ s_swarm_end <- as.POSIXct("2010-01-02 09:02:00", tz = "GMT")
 eruption_onset_start <- as.POSIXct("2010-01-02 10:20:00", tz = "GMT")
 
 # Plot of full event period:
-png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train3.png", width = 1800, height = 1200, res = 300)
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_515_train3_lbound.png", width = 1800, height = 1200, res = 300)
 
 plot(lag1h_model_df_train3[, "DateTime"] - 60*60, forecast_3$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date", xaxt = "n", ylim = c(0, 1))
 axis(1, at = lag1h_model_df_train3[, "DateTime"][seq(1, nrow(lag1h_model_df_train3), length = 4)][1:3] - 60*60, 
      labels = c("Jan 01", "Jan 02", "Jan 03"))
 
 dev.off()
+
+# Plot of full event period (for training set 3 only fit):
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train3_only.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train3[, "DateTime"] - 60*60, model_df$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date", xaxt = "n", ylim = c(0, 1))
+axis(1, at = lag1h_model_df_train3[, "DateTime"][seq(1, nrow(lag1h_model_df_train3), length = 4)][1:3] - 60*60,
+     labels = c("Jan 01", "Jan 02", "Jan 03"))
+
+dev.off()
+
 
 # Plot zoomed into day of eruption:
 
@@ -368,13 +463,64 @@ plot_period <- which(lag1h_model_df_train3$DateTime>=s_crisis_start & lag1h_mode
 plot_period <- c((plot_period[1]-start_buffer+1):(plot_period[1]-1), plot_period, (plot_period[length(plot_period)]+ 1):(plot_period[length(plot_period)]+end_buffer-1))
 
 # DateTime in model_df is for forecasted time so is 1 hour after time of covariates. 
-png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train3_zoom.png", width = 1800, height = 1200, res = 300)
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_515_train3_zoom.png", width = 1800, height = 1200, res = 300)
 plot(lag1h_model_df_train3[plot_period, "DateTime"] - 60*60, forecast_3$te_prob[plot_period], type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Time (UTC) on Jan 02", ylim = c(0, 1))
 abline(v = eruption_onset_start, col = 'blue')
 abline(v = s_crisis_start, col = 'blue', lty = 3)
 abline(v = s_swarm_start, col = 'blue', lty = 2)
 abline(v = s_swarm_end, col = 'blue', lty = 2)
 dev.off()
+
+# For training set 3 only fit:
+# png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_15_train3_only_zoom.png", width = 1800, height = 1200, res = 300)
+# plot(lag1h_model_df_train3[plot_period, "DateTime"] - 60*60, model_df$te_prob[plot_period], type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Time (UTC) on Jan 02", ylim = c(0, 1))
+# abline(v = eruption_onset_start, col = 'blue')
+# abline(v = s_crisis_start, col = 'blue', lty = 3)
+# abline(v = s_swarm_start, col = 'blue', lty = 2)
+# abline(v = s_swarm_end, col = 'blue', lty = 2)
+# dev.off()
+
+# Major covariates:
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_kurtosis_0120_train3.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train3$DateTime - 60*60, forecast_3$cep_kurtosis_0120, type = 'l', ylab = "0.1-20Hz cepstral kurtosis", xlab = "Date", xaxt = "n", ylim = c(-8, 4)) 
+
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = s_crisis_start, col = 'blue', lty = 3)
+abline(v = s_swarm_start, col = 'blue', lty = 2)
+abline(v = s_swarm_end, col = 'blue', lty = 2)
+axis(1, at = lag1h_model_df_train3[, "DateTime"][seq(1, nrow(lag1h_model_df_train3), length = 4)][1:3] - 60*60, 
+     labels = c("Jan 01", "Jan 02", "Jan 03"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_train3.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train3$DateTime - 60*60, forecast_3$cep_skew_0120, type = 'l', ylab = "0.1-20Hz cepstral skewness", xlab = "Date", xaxt = "n", ylim = c(-8, 4)) 
+
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = s_crisis_start, col = 'blue', lty = 3)
+abline(v = s_swarm_start, col = 'blue', lty = 2)
+abline(v = s_swarm_end, col = 'blue', lty = 2)
+axis(1, at = lag1h_model_df_train3[, "DateTime"][seq(1, nrow(lag1h_model_df_train3), length = 4)][1:3] - 60*60, 
+     labels = c("Jan 01", "Jan 02", "Jan 03"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_train3.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train3$DateTime - 60*60, forecast_3$energy_hp001, type = 'l', ylab = "High pass 0.01Hz energy", xlab = "Date", xaxt = "n", ylim = c(-2, 3)) 
+
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = s_crisis_start, col = 'blue', lty = 3)
+abline(v = s_swarm_start, col = 'blue', lty = 2)
+abline(v = s_swarm_end, col = 'blue', lty = 2)
+axis(1, at = lag1h_model_df_train3[, "DateTime"][seq(1, nrow(lag1h_model_df_train3), length = 4)][1:3] - 60*60, 
+     labels = c("Jan 01", "Jan 02", "Jan 03"))
+
+dev.off()
+
 
 ## 6. Compute goodness-of-fit tests for the logistic regression.
 
@@ -402,27 +548,47 @@ res.pearson_cp <- residuals(cp_model, type="pearson")
 
 acf_te_res <- acf(res.pearson[1:train1_end], plot = FALSE)
 acf_cp_res <- acf(res.pearson_cp[1:train1_end], plot = FALSE)
-plot(acf_cp_res, type = 'l', col = 'red', main = '')
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/acf_te_15_train1_lbound.png", width = 1800, height = 1200, res = 300)
+
+plot(acf_cp_res, type = 'l', col = 'red', main = '', lty = 3)
 lines(acf_te_res$lag, acf_te_res$acf)
-legend(27.5, 0.95, lty = rep(1, 2), col = c("black", "red"), legend = c("Logit model", "Constant probability"), bty = "n")
+legend(22.5, 0.95, col = c("black", "red"), lty = c(1, 3), legend = c("Logistic regression", "Constant probability"), bty = "n")
+
+dev.off()
 
 # Training set 2
 
 acf_te_res <- acf(res.pearson[(train1_end+1):train2_end], plot = FALSE)
 acf_cp_res <- acf(res.pearson_cp[(train1_end+1):train2_end], plot = FALSE)
 # barlett_ci <- qnorm(0.975)/ sqrt(nrow(te_df))
-plot(acf_cp_res, type = 'l', col = 'red', main = '')
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/acf_te_15_train2_lbound.png", width = 1800, height = 1200, res = 300)
+
+plot(acf_cp_res, type = 'l', col = 'red', main = '', lty = 3)
 lines(acf_te_res$lag, acf_te_res$acf)
-legend(27.5, 0.95, lty = rep(1, 2), col = c("black", "red"), legend = c("Logit model", "Constant probability"), bty = "n")
+legend(22.5, 0.95, col = c("black", "red"), lty = c(1, 3), legend = c("Logistic regression", "Constant probability"), bty = "n")
+
+dev.off()
 
 # Training set 3
 
 acf_te_res <- acf(res.pearson[(train2_end+1):train3_end], plot = FALSE)
 acf_cp_res <- acf(res.pearson_cp[(train2_end+1):train3_end], plot = FALSE)
 # barlett_ci <- qnorm(0.975)/ sqrt(nrow(te_df))
-plot(acf_cp_res, type = 'l', col = 'red', main = '')
+
+# For training set 3 only fit:
+# acf_te_res <- acf(res.pearson, plot = FALSE)
+# acf_cp_res <- acf(res.pearson_cp, plot = FALSE)
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/acf_te_15_train3_lbound.png", width = 1800, height = 1200, res = 300)
+
+plot(acf_cp_res, type = 'l', col = 'red', main = '', lty = 3)
 lines(acf_te_res$lag, acf_te_res$acf)
-legend(27.5, 0.95, lty = rep(1, 2), col = c("black", "red"), legend = c("Logit model", "Constant probability"), bty = "n")
+legend(22.5, 0.95, col = c("black", "red"), lty = c(1, 3), legend = c("Logistic regression", "Constant probability"), bty = "n")
+
+dev.off()
+
 
 ## 8. Fit dynamic GP model to threshold excesses.
 
@@ -445,7 +611,7 @@ excess_df <- excess_df[excess_df$excess>=0, ]
 # ================ Indicate if shape parameter is set to zero:
 zero_shape <- FALSE
 
-source('D:/Documents/Imperial_NTU_collaboration/Seismic data/GPD_regression.r')
+source('D:/Documents/Imperial_NTU_collaboration/Seismic data/dynamic-EV-forecasting/GPD_regression.r')
 
 # Check for multicollinearity in covariates:
 
@@ -564,29 +730,51 @@ AIC(cgp_model) >  excess_AIC
 excess_pmean_cgp <- (cgp_model$estimate[1])/(1-cgp_model$estimate[2])
 res.excess_cgp <- excess_df$excess - excess_pmean_cgp
 
+set_id <- c(rep(1, train1_end), rep(2, train2_end - train1_end + 1), rep(3, train3_end - train2_end + 1))[model_df$excess >= 0]
+
 # Training set 1:
 
 acf_excess_res <- acf(res.excess[set_id == 1]) 
 acf_cgp_res <- acf(res.excess_cgp[set_id == 1])
-plot(acf_cgp_res, type = 'l', col = 'red', main = '')
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/acf_excess_15_train1_lbound.png", width = 1800, height = 1200, res = 300)
+
+plot(acf_cgp_res, type = 'l', col = 'red', main = '', lty = 3, xlim = c(0, 20))
 lines(acf_excess_res$lag, acf_excess_res$acf)
-legend(12, 0.95, lty = rep(1, 2), col = c("black", "red"), legend = c("Dynamic GP", "Constant GP"), bty = "n")
+legend(12.5, 0.95, col = c("black", "red"), lty = c(1, 3), legend = c("Dynamic GP", "Constant GP"), bty = "n")
+
+dev.off()
 
 # Training set 2:
 
 acf_excess_res <- acf(res.excess[set_id == 2]) 
 acf_cgp_res <- acf(res.excess_cgp[set_id == 2])
-plot(acf_cgp_res, type = 'l', col = 'red', main = '')
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/acf_excess_15_train2_lbound.png", width = 1800, height = 1200, res = 300)
+
+plot(acf_cgp_res, type = 'l', col = 'red', main = '', lty = 3, xlim = c(0, 20))
 lines(acf_excess_res$lag, acf_excess_res$acf)
-legend(12, 0.95, lty = rep(1, 2), col = c("black", "red"), legend = c("Dynamic GP", "Constant GP"), bty = "n")
+legend(12.5, 0.95, col = c("black", "red"), lty = c(1, 3), legend = c("Dynamic GP", "Constant GP"), bty = "n")
+
+dev.off()
+
 
 # Training set 3:
 
 acf_excess_res <- acf(res.excess[set_id == 3]) 
 acf_cgp_res <- acf(res.excess_cgp[set_id == 3])
-plot(acf_cgp_res, type = 'l', col = 'red', main = '')
+
+# For training set 3 only fit:
+# acf_excess_res <- acf(res.excess) 
+# acf_cgp_res <- acf(res.excess_cgp)
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/acf_excess_15_train3_lbound.png", width = 1800, height = 1200, res = 300)
+
+plot(acf_cgp_res, type = 'l', col = 'red', main = '', lty = 3, xlim = c(0, 20))
 lines(acf_excess_res$lag, acf_excess_res$acf)
-legend(12, 0.95, lty = rep(1, 2), col = c("black", "red"), legend = c("Dynamic GP", "Constant GP"), bty = "n")
+legend(12.5, 0.95, col = c("black", "red"), lty = c(1, 3), legend = c("Dynamic GP", "Constant GP"), bty = "n")
+
+dev.off()
 
 ## 10. Check goodness-of-fit of GPD regression.
 
@@ -606,8 +794,12 @@ stand_excess_ordered <- sort(stand_excess[not_nan_id], decreasing = FALSE)
 
 exp_quantile <- -log(1 - (1:length(stand_excess))/(length(stand_excess)+1))
 
-plot(exp_quantile[not_nan_id], stand_excess_ordered, type = 'p', ylab = "Empirical quantiles of standardised excesses", xlab = "Theoretical quantiles of unit exponential", main = "Non-zero shape parameter")
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/excess_qq_lbound.png", width = 1200, height = 1200, res = 300)
+
+plot(exp_quantile[not_nan_id], stand_excess_ordered, type = 'p', ylab = "Empirical quantiles", xlab = "Theoretical quantiles", ylim = c(0, 20), xlim = c(0, 8)) #, main = "Non-zero shape parameter", ylim = c(0, 20), xlim = c(0, 20))
 abline(a = 0, b = 1)
+
+dev.off()
 
 # Without assuming shape = 0, for constant GPD:
 
@@ -623,8 +815,12 @@ stand_excess_ordered <- sort(stand_excess[not_nan_id], decreasing = FALSE)
 
 exp_quantile <- -log(1 - (1:length(stand_excess))/(length(stand_excess)+1))
 
-plot(exp_quantile[not_nan_id], stand_excess_ordered, type = 'p', ylab = "Empirical quantiles of standardised excesses", xlab = "Theoretical quantiles of unit exponential", main = "Non-zero shape parameter")
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/excess_qq_lbound_cgpd.png", width = 1200, height = 1200, res = 300)
+
+plot(exp_quantile[not_nan_id], stand_excess_ordered, type = 'p', ylab = "Empirical quantiles", xlab = "Theoretical quantiles", ylim = c(0, 20), xlim = c(0, 8)) #, main = "Non-zero shape parameter")
 abline(a = 0, b = 1)
+
+dev.off()
 
 # Save forecast results.
 # ================ Choose frequency band here:

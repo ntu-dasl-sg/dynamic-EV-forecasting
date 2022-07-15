@@ -403,7 +403,7 @@ time.taken <- proc.time()[3] - temp.time # 14 minutes for 1 run.
 
 ## 4. Plot changes in AUC with threshold choice.
 
-accuracy_df <- read.csv("accuracy_df.csv")
+accuracy_df <- read.csv("Y:/accuracy_df.csv")
 
 freq_bands_2 <- unique(accuracy_df$freq_band) # csv cannot read characters starting with "0".
 
@@ -422,9 +422,9 @@ levels(accuracy_df$freq_band) <- c("0.1-1 Hz", "1-5 Hz", "5-15 Hz", "0.1-20 Hz",
 
 accuracy_df_trunc <- accuracy_df[accuracy_df$freq_band %in% c("1-5 Hz", "0.1-20 Hz", "High pass 0.01Hz"), ]
 
-png(paste("Graphics/AUC_thres_pc_all_freq_trunc.png", sep = ""), width = 2000, height = 1200, res = 300)
+png("D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/AUC_thres_pc_all_freq_trunc.png", width = 1500, height = 1250, res = 300)
 
-ggplot(data = accuracy_df_trunc) + geom_line(aes(x = thres_pc, y = AUC, group = freq_band)) + geom_point(aes(x = thres_pc, y = AUC, shape = freq_band)) + theme_classic() + labs(x = "Proportion of EV threshold", shape = "Frequency band")
+ggplot(data = accuracy_df_trunc) + geom_line(aes(x = thres_pc, y = AUC, linetype = freq_band)) + geom_point(aes(x = thres_pc, y = AUC, shape = freq_band)) + theme_classic() + labs(x = "Proportion of EV threshold", shape = "Frequency band", linetype = "Frequency band") + theme(legend.position="bottom")
 
 dev.off()
 

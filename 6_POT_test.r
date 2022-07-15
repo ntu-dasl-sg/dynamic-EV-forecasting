@@ -15,6 +15,8 @@ library(IRISSeismic)
 ## 1. Read in test data (to evaluate model).
 
 # ================ Change frequency band here:
+# load(file = "Y:/test_data/lag1h_model_df_515.RData")
+# For non-events
 load(file = "Y:/non_events/NEvent_3/lag1h_model_df_515.RData")
 
 test_df <- lag1h_model_df
@@ -127,9 +129,76 @@ test_end <- as.POSIXct("2009-05-10 00:00:00", tz = "GMT")
 test_period <- seq(test_start, test_end, by = 10) # 10 sec decimination.
 te_test_df$DateTime <- test_period
 
-plot(te_test_df$DateTime - 60*60, te_test_df$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date")
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/te_prob_515_nonevent3.png", width = 1800, height = 1200, res = 300)
+
+plot(te_test_df$DateTime - 60*60, te_test_df$te_prob, type = 'l', ylab = "1 hour ahead forecast probability", xlab = "Date", xaxt = "n", ylim = c(0, 1))
+axis(1, at = te_test_df[, "DateTime"][seq(1, nrow(te_test_df), length = 3)][1:3] - 60*60,
+labels = c("May 08", "May 09", "May 10"))
+
 # For 10/14/2010 event:
 # abline(v = eruption_onset_start, col = 'blue')
 # abline(v = seismic_crisis_start, col = 'blue', lty = 3)
 # abline(v = seismic_swarm_start, col = 'blue', lty = 2)
 # abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+# axis(1, at = te_test_df[, "DateTime"][seq(1, nrow(te_test_df), length = 3)][1:3] - 60*60,
+# labels = c("Oct 13", "Oct 14", "Oct 15"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/db_envelope_nonevent1.png", width = 1800, height = 1200, res = 300)
+
+plot(te_test_df$DateTime, lag1h_model_df$piton_env_dB, type = 'l', ylab = "Envelope (Decibels)", xlab = "Date", xaxt = "n", ylim = c(15, 100))
+# abline(h = 85, lty = 2, col = 2)
+# abline(v = eruption_onset_start, col = 'blue')
+# abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+# abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+# abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+# axis(1, at = te_test_df[, "DateTime"][seq(1, nrow(te_test_df), length = 3)][1:3],
+#      labels = c("Oct 13", "Oct 14", "Oct 15"))
+
+dev.off()
+
+## 6. Explore major covariates (based on coefficients of the logistic regression).
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_kurtosis_0120_test.png", width = 1800, height = 1200, res = 300)
+
+plot(te_test_df$DateTime - 60*60, te_test_df$cep_kurtosis_0120, type = 'l', ylab = "0.1-20Hz cepstral kurtosis", xlab = "Date", xaxt = "n", ylim = c(-8, 4))
+
+# For 10/14/2010 event:
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+axis(1, at = te_test_df[, "DateTime"][seq(1, nrow(te_test_df), length = 3)][1:3] - 60*60,
+     labels = c("Oct 13", "Oct 14", "Oct 15"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_test.png", width = 1800, height = 1200, res = 300)
+
+plot(te_test_df$DateTime - 60*60, te_test_df$cep_skew_0120, type = 'l', ylab = "0.1-20Hz cepstral skewness", xlab = "Date", xaxt = "n", ylim = c(-8, 4))
+
+# For 10/14/2010 event:
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+axis(1, at = te_test_df[, "DateTime"][seq(1, nrow(te_test_df), length = 3)][1:3] - 60*60,
+     labels = c("Oct 13", "Oct 14", "Oct 15"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_test.png", width = 1800, height = 1200, res = 300)
+
+plot(te_test_df$DateTime - 60*60, te_test_df$energy_hp001, type = 'l', ylab = "High pass 0.01Hz energy", xlab = "Date", xaxt = "n", ylim = c(-2, 3))
+
+# For 10/14/2010 event:
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+axis(1, at = te_test_df[, "DateTime"][seq(1, nrow(te_test_df), length = 3)][1:3] - 60*60,
+     labels = c("Oct 13", "Oct 14", "Oct 15"))
+
+dev.off()
+

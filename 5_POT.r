@@ -298,42 +298,54 @@ dev.off()
 png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_kurtosis_0120_train1.png", width = 1800, height = 1200, res = 300)
 
 plot(lag1h_model_df_train1$DateTime - 60*60, forecast_1$cep_kurtosis_0120, type = 'l', ylab = "0.1-20Hz cepstral kurtosis", xlab = "Date", xaxt = "n", ylim = c(-8, 4)) 
-
-abline(v = eruption_onset_start, col = 'blue')
-abline(v = seismic_crisis_start, col = 'blue', lty = 3)
-abline(v = seismic_swarm_start, col = 'blue', lty = 2)
-abline(v = seismic_swarm_end, col = 'blue', lty = 2)
 axis(1, at = lag1h_model_df_train1[, "DateTime"][seq(1, nrow(lag1h_model_df_train1), length = 4)][1:3] - 60*60, 
      labels = c("Nov 04", "Nov 05", "Nov 06"))
 
 dev.off()
 
-png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_train1.png", width = 1800, height = 1200, res = 300)
-
-plot(lag1h_model_df_train1$DateTime - 60*60, forecast_1$cep_skew_0120, type = 'l', ylab = "0.1-20Hz cepstral skewness", xlab = "Date", xaxt = "n", ylim = c(-8, 4))
-
+# DateTime in model_df is for forecasted time so is 1 hour after time of covariates. 
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_kurtosis_0120_train1_zoom.png", width = 1800, height = 1200, res = 300)
+plot(lag1h_model_df_train1[plot_period, "DateTime"] - 60*60, forecast_1$cep_kurtosis_0120[plot_period], type = 'l',  ylab = "0.1-20Hz cepstral kurtosis", xlab = "Time (UTC) on Nov 05", ylim = c(-8, 4)) 
 abline(v = eruption_onset_start, col = 'blue')
 abline(v = seismic_crisis_start, col = 'blue', lty = 3)
 abline(v = seismic_swarm_start, col = 'blue', lty = 2)
 abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+dev.off()
+
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_train1.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train1$DateTime - 60*60, forecast_1$cep_skew_0120, type = 'l', ylab = "0.1-20Hz cepstral skewness", xlab = "Date", xaxt = "n", ylim = c(-8, 4))
 axis(1, at = lag1h_model_df_train1[, "DateTime"][seq(1, nrow(lag1h_model_df_train1), length = 4)][1:3] - 60*60, 
      labels = c("Nov 04", "Nov 05", "Nov 06"))
 
+dev.off()
+
+# DateTime in model_df is for forecasted time so is 1 hour after time of covariates. 
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_train1_zoom.png", width = 1800, height = 1200, res = 300)
+plot(lag1h_model_df_train1[plot_period, "DateTime"] - 60*60, forecast_1$cep_skew_0120[plot_period], type = 'l',  ylab = "0.1-20Hz cepstral skewness", xlab = "Time (UTC) on Nov 05", ylim = c(-8, 4)) 
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
 dev.off()
 
 png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_train1.png", width = 1800, height = 1200, res = 300)
 
 plot(lag1h_model_df_train1$DateTime - 60*60, forecast_1$energy_hp001, type = 'l', ylab = "High pass 0.01Hz energy", xlab = "Date", xaxt = "n", ylim = c(-2, 3))
-
-abline(v = eruption_onset_start, col = 'blue')
-abline(v = seismic_crisis_start, col = 'blue', lty = 3)
-abline(v = seismic_swarm_start, col = 'blue', lty = 2)
-abline(v = seismic_swarm_end, col = 'blue', lty = 2)
 axis(1, at = lag1h_model_df_train1[, "DateTime"][seq(1, nrow(lag1h_model_df_train1), length = 4)][1:3] - 60*60, 
      labels = c("Nov 04", "Nov 05", "Nov 06"))
 
 dev.off()
 
+# DateTime in model_df is for forecasted time so is 1 hour after time of covariates. 
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_train1_zoom.png", width = 1800, height = 1200, res = 300)
+plot(lag1h_model_df_train1[plot_period, "DateTime"] - 60*60, forecast_1$energy_hp001[plot_period], type = 'l',  ylab = "High pass 0.01Hz energy", xlab = "Time (UTC) on Nov 05", ylim = c(-2, 3))
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = seismic_crisis_start, col = 'blue', lty = 3)
+abline(v = seismic_swarm_start, col = 'blue', lty = 2)
+abline(v = seismic_swarm_end, col = 'blue', lty = 2)
+dev.off()
 
 ##################
 # Training set 2 #
@@ -388,6 +400,14 @@ dev.off()
 png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_kurtosis_0120_train2.png", width = 1800, height = 1200, res = 300)
 
 plot(lag1h_model_df_train2$DateTime - 60*60, forecast_2$cep_kurtosis_0120, type = 'l', ylab = "0.1-20Hz cepstral kurtosis", xlab = "Date", xaxt = "n", ylim = c(-8, 4)) 
+axis(1, at = lag1h_model_df_train2[, "DateTime"][seq(1, nrow(lag1h_model_df_train2), length = 3)] - 60*60, 
+     labels = c("Dec 13", "Dec 14", "Dec 15"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_kurtosis_0120_train2_zoom.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train2[plot_period, "DateTime"] - 60*60, forecast_2$cep_kurtosis_0120[plot_period], type = 'l', ylab = "0.1-20Hz cepstral kurtosis", xlab = "Time (UTC) on Dec 14", ylim = c(-8, 4))
 
 abline(v = eruption_onset_start, col = 'blue')
 abline(v = seismic_crisis_start, col = 'blue', lty = 3)
@@ -401,6 +421,14 @@ dev.off()
 png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_train2.png", width = 1800, height = 1200, res = 300)
 
 plot(lag1h_model_df_train2$DateTime - 60*60, forecast_2$cep_skew_0120, type = 'l', ylab = "0.1-20Hz cepstral skewness", xlab = "Date", xaxt = "n", ylim = c(-8, 4))
+axis(1, at = lag1h_model_df_train2[, "DateTime"][seq(1, nrow(lag1h_model_df_train2), length = 3)] - 60*60, 
+     labels = c("Dec 13", "Dec 14", "Dec 15"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_train2_zoom.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train2[plot_period, "DateTime"] - 60*60, forecast_2$cep_skew_0120[plot_period], type = 'l', ylab = "0.1-20Hz cepstral skewness", xlab = "Time (UTC) on Dec 14", ylim = c(-8, 4))
 
 abline(v = eruption_onset_start, col = 'blue')
 abline(v = seismic_crisis_start, col = 'blue', lty = 3)
@@ -414,6 +442,14 @@ dev.off()
 png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_train2.png", width = 1800, height = 1200, res = 300)
 
 plot(lag1h_model_df_train2$DateTime - 60*60, forecast_2$energy_hp001, type = 'l', ylab = "High pass 0.01Hz energy", xlab = "Date", xaxt = "n", ylim = c(-2, 3)) 
+axis(1, at = lag1h_model_df_train2[, "DateTime"][seq(1, nrow(lag1h_model_df_train2), length = 3)] - 60*60, 
+     labels = c("Dec 13", "Dec 14", "Dec 15"))
+
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_train2_zoom.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train2[plot_period, "DateTime"] - 60*60, forecast_2$energy_hp001[plot_period], type = 'l', ylab = "High pass 0.01Hz energy", xlab = "Time (UTC) on Dec 14", ylim = c(-2, 3)) 
 
 abline(v = eruption_onset_start, col = 'blue')
 abline(v = seismic_crisis_start, col = 'blue', lty = 3)
@@ -485,40 +521,51 @@ dev.off()
 png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_kurtosis_0120_train3.png", width = 1800, height = 1200, res = 300)
 
 plot(lag1h_model_df_train3$DateTime - 60*60, forecast_3$cep_kurtosis_0120, type = 'l', ylab = "0.1-20Hz cepstral kurtosis", xlab = "Date", xaxt = "n", ylim = c(-8, 4)) 
-
-abline(v = eruption_onset_start, col = 'blue')
-abline(v = s_crisis_start, col = 'blue', lty = 3)
-abline(v = s_swarm_start, col = 'blue', lty = 2)
-abline(v = s_swarm_end, col = 'blue', lty = 2)
 axis(1, at = lag1h_model_df_train3[, "DateTime"][seq(1, nrow(lag1h_model_df_train3), length = 4)][1:3] - 60*60, 
      labels = c("Jan 01", "Jan 02", "Jan 03"))
 
 dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_kurtosis_0120_train3_zoom.png", width = 1800, height = 1200, res = 300)
+plot(lag1h_model_df_train3[plot_period, "DateTime"] - 60*60, forecast_3$cep_kurtosis_0120[plot_period], type = 'l', ylab = "0.1-20Hz cepstral kurtosis", xlab = "Time (UTC) on Jan 02", ylim = c(-8, 4)) 
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = s_crisis_start, col = 'blue', lty = 3)
+abline(v = s_swarm_start, col = 'blue', lty = 2)
+abline(v = s_swarm_end, col = 'blue', lty = 2)
+dev.off()
+
 
 png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_train3.png", width = 1800, height = 1200, res = 300)
 
 plot(lag1h_model_df_train3$DateTime - 60*60, forecast_3$cep_skew_0120, type = 'l', ylab = "0.1-20Hz cepstral skewness", xlab = "Date", xaxt = "n", ylim = c(-8, 4)) 
-
-abline(v = eruption_onset_start, col = 'blue')
-abline(v = s_crisis_start, col = 'blue', lty = 3)
-abline(v = s_swarm_start, col = 'blue', lty = 2)
-abline(v = s_swarm_end, col = 'blue', lty = 2)
 axis(1, at = lag1h_model_df_train3[, "DateTime"][seq(1, nrow(lag1h_model_df_train3), length = 4)][1:3] - 60*60, 
      labels = c("Jan 01", "Jan 02", "Jan 03"))
 
 dev.off()
 
-png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_train3.png", width = 1800, height = 1200, res = 300)
-
-plot(lag1h_model_df_train3$DateTime - 60*60, forecast_3$energy_hp001, type = 'l', ylab = "High pass 0.01Hz energy", xlab = "Date", xaxt = "n", ylim = c(-2, 3)) 
-
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/cep_skewness_0120_train3_zoom.png", width = 1800, height = 1200, res = 300)
+plot(lag1h_model_df_train3[plot_period, "DateTime"] - 60*60, forecast_3$cep_skew_0120[plot_period], type = 'l', ylab = "0.1-20Hz cepstral skewness", xlab = "Time (UTC) on Jan 02", ylim = c(-8, 4)) 
 abline(v = eruption_onset_start, col = 'blue')
 abline(v = s_crisis_start, col = 'blue', lty = 3)
 abline(v = s_swarm_start, col = 'blue', lty = 2)
 abline(v = s_swarm_end, col = 'blue', lty = 2)
+dev.off()
+
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_train3.png", width = 1800, height = 1200, res = 300)
+
+plot(lag1h_model_df_train3$DateTime - 60*60, forecast_3$energy_hp001, type = 'l', ylab = "High pass 0.01Hz energy", xlab = "Date", xaxt = "n", ylim = c(-2, 3)) 
 axis(1, at = lag1h_model_df_train3[, "DateTime"][seq(1, nrow(lag1h_model_df_train3), length = 4)][1:3] - 60*60, 
      labels = c("Jan 01", "Jan 02", "Jan 03"))
 
+dev.off()
+
+png(file = "D:/Documents/Imperial_NTU_collaboration/Seismic data/Graphics/energy_hp001_train3_zoom.png", width = 1800, height = 1200, res = 300)
+plot(lag1h_model_df_train3[plot_period, "DateTime"] - 60*60, forecast_3$energy_hp001[plot_period], type = 'l', ylab = "High pass 0.01Hz energy", xlab = "Time (UTC) on Jan 02", ylim = c(-2, 3)) 
+abline(v = eruption_onset_start, col = 'blue')
+abline(v = s_crisis_start, col = 'blue', lty = 3)
+abline(v = s_swarm_start, col = 'blue', lty = 2)
+abline(v = s_swarm_end, col = 'blue', lty = 2)
 dev.off()
 
 

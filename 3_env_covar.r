@@ -75,13 +75,7 @@ window_length <- 100*60*60 # Based on past 1 hour 100Hz data to compute covariat
 
 cov_names <- c("mean", "sd", "skew", "kurtosis", "energy", "ioce", "rms_bw", "mean_skew", "mean_kurtosis", "shannon", "roa", "max", "min")
 
-freq_cov_names <- paste("freq",cov_names, sep = "_")
-
-cep_cov_names <- paste("cep",cov_names, sep = "_")
-
-full_cov_names <- c(cov_names, freq_cov_names, cep_cov_names)
-
-cov_df <- matrix(NA, nrow = length(decim_id), ncol = length(full_cov_names))
+cov_df <- matrix(NA, nrow = length(decim_id), ncol = length(cov_names))
 
 temp.time <- proc.time()[3]
 
@@ -115,9 +109,7 @@ for(j in 1:length(decim_id)){
   # temp_cep_min <- min(temp_amp)
   
   cov_df[j, ] <- c(temp_mean, temp_sd, temp_skew, temp_kurtosis, temp_energy, temp_ioce, temp_rms_bw, temp_mean_skew, temp_mean_kurtosis, temp_shannon, temp_roa, temp_max, temp_min)
-                   
-                   #, temp_freq_mean, temp_freq_sd, temp_freq_skew, temp_freq_kurtosis, temp_freq_energy, temp_freq_ioce, temp_freq_rms_bw, temp_freq_mean_skew, temp_freq_mean_kurtosis, temp_freq_shannon, temp_freq_roa, temp_freq_max, temp_freq_min, temp_cep_mean, temp_cep_sd, temp_cep_skew, temp_cep_kurtosis, temp_cep_energy, temp_cep_ioce, temp_cep_rms_bw, temp_cep_mean_skew, temp_cep_mean_kurtosis, temp_cep_shannon, temp_cep_roa, temp_cep_max, temp_cep_min)
-  
+
   if(j%%1000 == 0){
     print(paste(j, "/", length(decim_id), " completed.", sep = ""))
   }
